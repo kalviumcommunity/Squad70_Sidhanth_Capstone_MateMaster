@@ -73,6 +73,63 @@ app.get('/api/matchmaking', async (req, res) => {
   }
 });
 
+// POST a new user
+app.post('/api/users', async (req, res) => {
+    try {
+      const user = new User(req.body);
+      const savedUser = await user.save();
+      res.status(201).json(savedUser);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  });
+  
+  // POST a new game
+  app.post('/api/games', async (req, res) => {
+    try {
+      const game = new Game(req.body);
+      const savedGame = await game.save();
+      res.status(201).json(savedGame);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  });
+  
+  // POST a new tutorial
+  app.post('/api/tutorials', async (req, res) => {
+    try {
+      const tutorial = new Tutorial(req.body);
+      const savedTutorial = await tutorial.save();
+      res.status(201).json(savedTutorial);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  });
+  
+  // POST a new leaderboard entry
+  app.post('/api/leaderboard', async (req, res) => {
+    try {
+      const entry = new Leaderboard(req.body);
+      const savedEntry = await entry.save();
+      res.status(201).json(savedEntry);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  });
+  
+  // POST a new matchmaking queue entry
+  app.post('/api/matchmaking', async (req, res) => {
+    try {
+      const queueItem = new Matchmaking(req.body);
+      const savedQueueItem = await queueItem.save();
+      res.status(201).json(savedQueueItem);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  });
+  
+ 
+
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
