@@ -128,7 +128,79 @@ app.post('/api/users', async (req, res) => {
     }
   });
   
+ // ==================== UPDATE USER ====================
  
+  app.put('/users/:id', async (req, res) => {
+    try {
+      const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true
+      });
+      if (!updatedUser) return res.status(404).json({ message: 'User not found' });
+      res.status(200).json(updatedUser);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ==================== UPDATE GAME ====================
+  
+  app.put('/games/:id', async (req, res) => {
+    try {
+      const updatedGame = await Game.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true
+      });
+      if (!updatedGame) return res.status(404).json({ message: 'Game not found' });
+      res.status(200).json(updatedGame);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ==================== UPDATE TUTORIAL ====================
+app.put('/tutorials/:id', async (req, res) => {
+  try {
+    const updatedTutorial = await Tutorial.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+    if (!updatedTutorial) return res.status(404).json({ message: 'Tutorial not found' });
+    res.status(200).json(updatedTutorial);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ==================== UPDATE LEADERBOARD ENTRY ====================
+app.put('/leaderboard/:id', async (req, res) => {
+  try {
+    const updatedEntry = await Leaderboard.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+    if (!updatedEntry) return res.status(404).json({ message: 'Entry not found' });
+    res.status(200).json(updatedEntry);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ==================== UPDATE MATCHMAKING ENTRY ====================
+app.put('/matchmaking/:id', async (req, res) => {
+  try {
+    const updatedEntry = await Matchmaking.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+    if (!updatedEntry) return res.status(404).json({ message: 'Matchmaking entry not found' });
+    res.status(200).json(updatedEntry);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+  
 
 // Start the server
 const PORT = process.env.PORT || 5000;
