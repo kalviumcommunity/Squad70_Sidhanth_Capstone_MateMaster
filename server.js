@@ -200,6 +200,8 @@ app.put('/matchmaking/:id', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// GET POST and PUT implemented!!
   
 
 // Start the server
