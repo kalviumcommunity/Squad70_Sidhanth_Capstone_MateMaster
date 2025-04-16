@@ -1,6 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const bcrypt = require("bcryptjs");
+const auth = require("./middleware/authmiddleware");
+
+
+
 
 // Import models
 const User = require('./models/User');
@@ -74,6 +81,19 @@ app.get('/api/matchmaking', async (req, res) => {
 });
 
 // POST a new user
+app.post("/api/login", async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) return res.status(400).json({ message: "User not found" });
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+  res.json({ token });
+});
+
 app.post('/api/users', async (req, res) => {
     try {
       const user = new User(req.body);
@@ -85,15 +105,19 @@ app.post('/api/users', async (req, res) => {
   });
   
   // POST a new game
-  app.post('/api/games', async (req, res) => {
-    try {
-      const game = new Game(req.body);
-      const savedGame = await game.save();
-      res.status(201).json(savedGame);
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-    }
-  });
+
+  // POST a new game (with JWT auth)
+app.post('/api/games', auth, async (req, res) => {
+  try {
+    // Create the new game with the userId from JWT token
+    const game = new Game({ ...req.body, userId: req.user.userId });
+    const savedGame = await game.save();
+    res.status(201).json(savedGame);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
   
   // POST a new tutorial
   app.post('/api/tutorials', async (req, res) => {
@@ -107,26 +131,34 @@ app.post('/api/users', async (req, res) => {
   });
   
   // POST a new leaderboard entry
-  app.post('/api/leaderboard', async (req, res) => {
-    try {
-      const entry = new Leaderboard(req.body);
-      const savedEntry = await entry.save();
-      res.status(201).json(savedEntry);
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-    }
-  });
+  
+  // POST a new leaderboard entry (with JWT auth)
+app.post('/api/leaderboard', auth, async (req, res) => {
+  try {
+    // Create a new leaderboard entry with userId from JWT token
+    const entry = new Leaderboard({ ...req.body, userId: req.user.userId });
+    const savedEntry = await entry.save();
+    res.status(201).json(savedEntry);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
   
   // POST a new matchmaking queue entry
-  app.post('/api/matchmaking', async (req, res) => {
-    try {
-      const queueItem = new Matchmaking(req.body);
-      const savedQueueItem = await queueItem.save();
-      res.status(201).json(savedQueueItem);
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-    }
-  });
+  
+  // POST a new matchmaking queue entry (with JWT auth)
+app.post('/api/matchmaking', auth, async (req, res) => {
+  try {
+    // Create a new matchmaking entry with userId from JWT token
+    const queueItem = new Matchmaking({ ...req.body, userId: req.user.userId });
+    const savedQueueItem = await queueItem.save();
+    res.status(201).json(savedQueueItem);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
   
  // ==================== UPDATE USER ====================
  
