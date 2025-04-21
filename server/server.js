@@ -32,6 +32,7 @@ mongoose.connect('mongodb://localhost:27017/matemaster', {
 // GET all users
 app.get('/api/users', async (req, res) => {
   try {
+    
     const users = await User.find();
     res.json(users);
   } catch (err) {
@@ -43,7 +44,9 @@ app.get('/api/users', async (req, res) => {
 app.get('/api/games/:id', async (req, res) => {
   try {
     const game = await Game.findById(req.params.id);
-    if (!game) return res.status(404).json({ message: 'Game not found' });
+    if (!game){
+       return res.status(404).json({ message: 'Game not found' });
+      }
     res.json(game);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -85,8 +88,9 @@ app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
-  if (!user) return res.status(400).json({ message: "User not found" });
-
+  if (!user){
+     return res.status(400).json({ message: "User not found" });
+}
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
@@ -96,6 +100,7 @@ app.post("/api/login", async (req, res) => {
 
 app.post('/api/users', async (req, res) => {
     try {
+    
       const user = new User(req.body);
       const savedUser = await user.save();
       res.status(201).json(savedUser);
@@ -109,7 +114,7 @@ app.post('/api/users', async (req, res) => {
   // POST a new game (with JWT auth)
 app.post('/api/games', auth, async (req, res) => {
   try {
-    // Create the new game with the userId from JWT token
+    // Create the new game with the userId 
     const game = new Game({ ...req.body, userId: req.user.userId });
     const savedGame = await game.save();
     res.status(201).json(savedGame);
@@ -122,6 +127,7 @@ app.post('/api/games', auth, async (req, res) => {
   // POST a new tutorial
   app.post('/api/tutorials', async (req, res) => {
     try {
+      // new tutrial
       const tutorial = new Tutorial(req.body);
       const savedTutorial = await tutorial.save();
       res.status(201).json(savedTutorial);
@@ -135,7 +141,7 @@ app.post('/api/games', auth, async (req, res) => {
   // POST a new leaderboard entry (with JWT auth)
 app.post('/api/leaderboard', auth, async (req, res) => {
   try {
-    // Create a new leaderboard entry with userId from JWT token
+    // Create a new leaderboard entry with userId 
     const entry = new Leaderboard({ ...req.body, userId: req.user.userId });
     const savedEntry = await entry.save();
     res.status(201).json(savedEntry);
@@ -147,10 +153,10 @@ app.post('/api/leaderboard', auth, async (req, res) => {
   
   // POST a new matchmaking queue entry
   
-  // POST a new matchmaking queue entry (with JWT auth)
+  // POST a new matchmaking queue entry 
 app.post('/api/matchmaking', auth, async (req, res) => {
   try {
-    // Create a new matchmaking entry with userId from JWT token
+    // Create a new matchmaking entry
     const queueItem = new Matchmaking({ ...req.body, userId: req.user.userId });
     const savedQueueItem = await queueItem.save();
     res.status(201).json(savedQueueItem);
@@ -168,7 +174,9 @@ app.post('/api/matchmaking', auth, async (req, res) => {
         new: true,
         runValidators: true
       });
-      if (!updatedUser) return res.status(404).json({ message: 'User not found' });
+      if (!updatedUser){
+         return res.status(404).json({ message: 'User not found' });
+        }
       res.status(200).json(updatedUser);
     } catch (err) {
       res.status(500).json({ error: err.message });
@@ -183,7 +191,9 @@ app.post('/api/matchmaking', auth, async (req, res) => {
         new: true,
         runValidators: true
       });
-      if (!updatedGame) return res.status(404).json({ message: 'Game not found' });
+      if (!updatedGame){ 
+        return res.status(404).json({ message: 'Game not found' });
+      }
       res.status(200).json(updatedGame);
     } catch (err) {
       res.status(500).json({ error: err.message });
@@ -197,7 +207,9 @@ app.put('/tutorials/:id', async (req, res) => {
       new: true,
       runValidators: true
     });
-    if (!updatedTutorial) return res.status(404).json({ message: 'Tutorial not found' });
+    if (!updatedTutorial) {
+      return res.status(404).json({ message: 'Tutorial not found' });
+    }
     res.status(200).json(updatedTutorial);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -211,7 +223,9 @@ app.put('/leaderboard/:id', async (req, res) => {
       new: true,
       runValidators: true
     });
-    if (!updatedEntry) return res.status(404).json({ message: 'Entry not found' });
+    if (!updatedEntry) {
+      return res.status(404).json({ message: 'Entry not found' });
+    }
     res.status(200).json(updatedEntry);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -226,7 +240,9 @@ app.put('/matchmaking/:id', async (req, res) => {
       new: true,
       runValidators: true
     });
-    if (!updatedEntry) return res.status(404).json({ message: 'Matchmaking entry not found' });
+    if (!updatedEntry) {
+      return res.status(404).json({ message: 'Matchmaking entry not found' });
+    }
     res.status(200).json(updatedEntry);
   } catch (err) {
     res.status(500).json({ error: err.message });
