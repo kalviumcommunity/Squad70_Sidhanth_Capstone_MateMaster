@@ -250,6 +250,62 @@ app.put('/matchmaking/:id', async (req, res) => {
 });
 
 // GET POST and PUT implemented!!
+
+// Route to delete a user by ID
+app.delete("/api/users/:id", async (req, res) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser) return res.status(404).json({ message: "User not found" });
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Route to delete a game by ID
+app.delete("/api/games/:id", async (req, res) => {
+  try {
+    const deletedGame = await Game.findByIdAndDelete(req.params.id);
+    if (!deletedGame) return res.status(404).json({ message: "Game not found" });
+    res.json({ message: "Game deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Route to delete a tutorial by ID
+app.delete("/api/tutorials/:id", async (req, res) => {
+  try {
+    const deletedTutorial = await Tutorial.findByIdAndDelete(req.params.id);
+    if (!deletedTutorial) return res.status(404).json({ message: "Tutorial not found" });
+    res.json({ message: "Tutorial deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Route to delete a leaderboard entry by ID
+app.delete("/api/leaderboard/:id", async (req, res) => {
+  try {
+    const deletedEntry = await Leaderboard.findByIdAndDelete(req.params.id);
+    if (!deletedEntry) return res.status(404).json({ message: "Leaderboard entry not found" });
+    res.json({ message: "Leaderboard entry deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Route to delete a matchmaking entry by ID
+app.delete("/api/matchmaking/:id", async (req, res) => {
+  try {
+    const deletedMatch = await Matchmaking.findByIdAndDelete(req.params.id);
+    if (!deletedMatch) return res.status(404).json({ message: "Matchmaking entry not found" });
+    res.json({ message: "Matchmaking entry deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
   
 
 // Start the server
