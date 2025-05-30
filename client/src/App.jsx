@@ -5,6 +5,7 @@ import TutorialManager from "./components/TutorialManager";
 import GameManager from "./components/GameManager";
 import LeaderboardManager from "./components/LeaderboardManager";
 import UserManager from "./components/UserManager";
+import Spinner from "./components/spinner";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/leaderboard" element={<LeaderboardManager />} />
         <Route path="/users" element={<UserManager />} />
         <Route path="/games" element={<GameManager />} />
+        <Route path="/spinner" element={<Spinner/>}/>
       </Routes>
     </Router>
   );
