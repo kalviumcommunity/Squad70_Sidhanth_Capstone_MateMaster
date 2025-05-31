@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const auth = require("./middleware/authmiddleware");
+const axios = require('axios'); 
 
 
 
@@ -164,6 +165,32 @@ app.post('/api/matchmaking', auth, async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+
+// AI Chat Assistant Endpoint
+app.post('/api/chat', async (req, res) => {
+  const { prompt } = req.body;
+  try {
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: prompt }],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+      }
+    );
+
+    const aiReply = response.data.choices[0].message.content;
+    res.json({ reply: aiReply });
+  } catch (error) {
+    console.error('AI error:', error.message);
+    res.status(500).json({ error: 'Failed to get AI response' });
+  }
+});
+
 
   
  // ==================== UPDATE USER ====================
